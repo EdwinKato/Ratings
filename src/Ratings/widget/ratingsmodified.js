@@ -67,13 +67,13 @@ define([
             } else {
                 showVote = number.round((showTotal / showCount));
             }
-            this.createRatingsList(showVote, mxApp);
+            createRatingsList(showVote);
 
 
             mendix.lang.nullExec(callback);
         },
 
-        createRatingsList : function(showVote, mxApp){
+        createRatingsList : function(showVote){
             var ratingsList = mxui.dom.create("ul");
             if (this.voteEnabled === true) {
                 this.ratingsListEvent = this.connect(ratingsList, "onmouseleave", lang.hitch(this, this.mouseleaveEvent, showVote));

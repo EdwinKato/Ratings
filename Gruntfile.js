@@ -1,6 +1,6 @@
 // Generated on 2016-03-25 using generator-mendix 1.3.3 :: git+https://github.com/mendix/generator-mendix.git
-/*jshint -W069*/
-/*global module*/
+/* jshint -W069*/
+/* global module*/
 "use strict";
 
 // In case you seem to have trouble starting Mendix through `grunt start-mendix`, you might have to set the path to the Mendix application.
@@ -8,7 +8,7 @@
 var MODELER_PATH = null;
 var MODELER_ARGS = "/file:{path}";
 
-/********************************************************************************
+/** ******************************************************************************
  * Do not edit anything below, unless you know what you are doing
  ********************************************************************************/
 
@@ -19,8 +19,10 @@ var path = require("path"),
     xml2js = require("xml2js"),
     parser = new xml2js.Parser(),
     builder = new xml2js.Builder({
-        renderOpts: { pretty: true, indent: "    ", newline: "\n" },
-        xmldec:     { standalone: null, encoding: "utf-8" }
+        renderOpts: {
+pretty: true, indent: "    ", newline: "\n"
+},
+        xmldec:     {standalone: null, encoding: "utf-8"}
     }),
     shelljs = require("shelljs"),
     pkg = require("./package.json");
@@ -54,8 +56,8 @@ module.exports = function (grunt) {
     grunt.initConfig({
         watch: {
             autoDeployUpdate: {
-                "files": [ "./src/**/*" ],
-                "tasks": [ "compress", "newer:copy" ],
+                files: [ "./src/**/*" ],
+                tasks: [ "compress", "newer:copy" ],
                 options: {
                     debounceDelay: 250,
                     livereload: true
@@ -68,24 +70,28 @@ module.exports = function (grunt) {
                     archive: "./dist/" + pkg.name + ".mpk",
                     mode: "zip"
                 },
-            files: [{
+                files: [{
                 expand: true,
                 date: new Date(),
                 store: false,
                 cwd: "./src",
                 src: ["**/*"]
-              }]
+            }]
             }
         },
         copy: {
             deployment: {
                 files: [
-                    { dest: TEST_WIDGETS_DEPLOYMENT_FOLDER, cwd: "./src/", src: ["**/*"], expand: true }
+                    {
+dest: TEST_WIDGETS_DEPLOYMENT_FOLDER, cwd: "./src/", src: ["**/*"], expand: true
+}
                 ]
             },
             mpks: {
                 files: [
-                    { dest: TEST_WIDGETS_FOLDER, cwd: "./dist/", src: [ pkg.name + ".mpk"], expand: true }
+                    {
+dest: TEST_WIDGETS_FOLDER, cwd: "./dist/", src: [ pkg.name + ".mpk"], expand: true
+}
                 ]
             }
         },
@@ -156,7 +162,6 @@ module.exports = function (grunt) {
                 grunt.log.error("Cannot find current version number");
             }
         });
-
     });
 
     grunt.registerTask("generate-icon", function () {
@@ -164,7 +169,7 @@ module.exports = function (grunt) {
             options = {localFile: true, string: true},
             done = this.async();
 
-            grunt.log.writeln("Processing icon");
+        grunt.log.writeln("Processing icon");
 
         if (!grunt.file.exists(iconPath) || !grunt.file.exists(WIDGET_XML)) {
             grunt.log.error("can\'t generate icon");
