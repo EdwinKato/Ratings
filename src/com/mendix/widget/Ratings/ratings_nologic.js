@@ -5,11 +5,11 @@ define([
     "dojo/dom-attr",
     "dojo/dom-class",
     "dojo/_base/lang",
-    "dojo/text!Ratings/widget/templates/ratings.html"
+    "dojo/text!com/mendix/widget/Ratings/templates/ratings.html"
 ], function (declare, _WidgetBase, _TemplatedMixin, domAttr, domClass, lang, widgetTemplate) {
     "use strict";
 
-    return declare("Ratings.widget.ratings_nologic", [ _WidgetBase, _TemplatedMixin ], {
+    return declare("com.mendix.widget.Ratings.ratings_nologic", [ _WidgetBase, _TemplatedMixin ], {
         templateString : widgetTemplate,
         name : "",
         voteEnabled : false,
@@ -145,4 +145,4 @@ define([
     });
 });
 
-require(["Ratings/widget/ratings_nologic"]);
+require(["com/mendix/widget/Ratings/ratings_nologic"]);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<widget id="Ratings.widget.ratings" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
+<widget id="com.mendix.widget.Ratings.ratings" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
     <name>Ratings widget</name>
     <description>This widget lets you record votes for the object.</description>
     <icon>

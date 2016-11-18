@@ -7,11 +7,11 @@ define([
     "dojo/_base/lang",// contains functions for supporting Polymorphism and other language constructs that are fundamental to the rest of the toolkit
     "dojo/number",// contains methods for user presentation of JavaScript Number objects: formatting, parsing, and rounding
     "dojo/_base/array", // enhancements to native array functions which may not be available
-    "dojo/text!Ratings/widget/templates/ratings.html"
+    "dojo/text!com/mendix/widget/Ratings/templates/ratings.html"
 ], function (declare, _WidgetBase, _TemplatedMixin, domAttr, domConstruct, lang, number, dojoArray, widgetTemplate) {
     "use strict";
 
-    return declare("Ratings.widget.ratings", [ _WidgetBase, _TemplatedMixin ], {
+    return declare("com.mendix.widget.Ratings.ratings", [ _WidgetBase, _TemplatedMixin ], {
 
         templateString : widgetTemplate,
 
@@ -240,4 +240,4 @@ define([
     });
 });
 
-require(["Ratings/widget/ratings"]);
+require(["com/mendix/widget/Ratings/ratings"]);

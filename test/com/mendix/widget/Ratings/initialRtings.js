@@ -7,37 +7,36 @@ define([
     "dojo/_base/lang",// contains functions for supporting Polymorphism and other language constructs that are fundamental to the rest of the toolkit
     "dojo/number",// contains methods for user presentation of JavaScript Number objects: formatting, parsing, and rounding
     "dojo/_base/array", // enhancements to native array functions which may not be available
-    "dojo/text!Ratings/widget/templates/ratings.html"
+    "dojo/text!com/mendix/widget/Ratings/templates/ratings.html"
 ], function (declare, _WidgetBase, _TemplatedMixin, domAttr, domConstruct, lang, number, dojoArray, widgetTemplate) {
     "use strict";
 
-    return declare("Ratings.widget.ratings", [ _WidgetBase, _TemplatedMixin ], {
+    return declare("com.mendix.widget.Ratings.ratings", [ _WidgetBase, _TemplatedMixin ], {
 
         templateString : widgetTemplate,
 
-        divNode : "", // This is picked from the widget template
+        divNode : "",
         attrValues : null,
         hasVoted : true,
-        connectArray : null, // This is used to register for events on click of each of the stars and is thus declared as an array
-        mouseoverArray : null, // This is used to register for events on mouse over of each of the stars and is thus declared as an array
-        root : "", // This is set as the url at which the mendix app is running
+        connectArray : null,
+        mouseoverArray : null,
+        root : "",
         ratingsListEvent : "",
-        pathAttr : "", // Used to refer to the attribute that stores the vote
-        pathName : "", // Used to refer to the attribute that stores the name of the voter
+        pathAttr : "",
+        pathName : "",
 
-        standardImage: null, // This refers to the full uncolured star
-        mouseoverImage: null, // This refers to the full coloured image
-        halfImage: "", // This refers to the half coloured image
+        standardImage: null,
+        mouseoverImage: null,
+        halfImage: "",
 
-        noofstars: 5, // My modification. Added this attribute to refer to the number of stars for looping purposes.
-        halfimagevalue: 0.5, // My modification. Added this attribute to refer to the integer value for halfimage
-        two: 2, // My modification to cater for the magic number 2
+        noofstars: 5,
+        halfimagevalue: 0.5,
 
-        _contextObj: null, // Internal variable indicating the object within which the widget is placed
+        _contextObj: null,
 
         postCreate : function(){
             logger.debug(this.id + ".postCreate");
-            this.root = window.mx.appUrl; // Gives us the url the application is running at. mx is the container of the mendix client subsystems
+            this.root = window.mx.appUrl;
 
             this.attrValues = [];
             this.connectArray = [];
@@ -63,24 +62,18 @@ define([
             if (showCount === 0) {
                 showVote = 1;
             } else if (this.halfImage !== "") {
-                showVote = ((showTotal / showCount) * this.two).toFixed() / this.two; // Dont understand why he divides by 2 and then multiplies by 2 again.
+                showVote = ((showTotal / showCount) * 2).toFixed() / 2;
             } else {
                 showVote = number.round((showTotal / showCount));
             }
-            createRatingsList(showVote);
 
-
-            mendix.lang.nullExec(callback);
-        },
-
-        createRatingsList : function(showVote){
             var ratingsList = mxui.dom.create("ul");
             if (this.voteEnabled === true) {
                 this.ratingsListEvent = this.connect(ratingsList, "onmouseleave", lang.hitch(this, this.mouseleaveEvent, showVote));
             }
 
             for (var i = 1; i <= this.noofstars; i++) {
-                var imgNode = mxui.dom.create("img",{class: "ratings_image"}); // create(element, propsnullable, …children)
+                var imgNode = mxui.dom.create("img",{class: "ratings_image"});
                 if (i > showVote) {
                     if (this.halfImage !== "" && (i - showVote === this.halfimagevalue)) {
                         domAttr.set(imgNode, "src", this._getImagePath(this.halfImage));
@@ -92,14 +85,16 @@ define([
                 }
                 var ratingsLi = mxui.dom.create("li", imgNode);
                 if (this.voteEnabled === true) {
-                    this.mouseoverArray[i-1] = {};  // This is so because on  mouse enter only works upto the fifth
+                    this.mouseoverArray[i-1] = {};
                     this.mouseoverArray[i-1].handle = this.connect(imgNode, "onmouseenter", lang.hitch(this, this.mouseenterEvent, i));
                     this.mouseoverArray[i-1].element = imgNode;
                     this.connectArray[i-1] = this.connect(ratingsLi, "onclick", lang.hitch(this, this.onclickRating, i, mxApp));
                 }
-                ratingsList.appendChild(ratingsLi); // Just normal JavaScript
+                ratingsList.appendChild(ratingsLi);
             }
             this.divNode.appendChild(ratingsList);
+
+            mendix.lang.nullExec(callback);
         },
 
         setMouseOver : function (iterator) {
@@ -118,7 +113,7 @@ define([
             }
         },
 
-        _getImagePath : function (img) { // Index of returns position of first occurrence of provided word
+        _getImagePath : function (img) {
             return (this.root + (this.root.indexOf("localhost") !== -1 ? "/" : "" ) + img).split("?")[0]; // fix image path and remove cachebust
         },
 
@@ -135,7 +130,7 @@ define([
 
             // store the fact that the user has voted
             var currentUserName = mx.session.getUserName();
-            var xpathString = "//" + this.pathName[1] + "[" + this.pathName[this.two] + " = '" + currentUserName + "']"+"["+ this.pathName[0] + " = '" + mxApp.getGuid() +  "']";
+            var xpathString = "//" + this.pathName[1] + "[" + this.pathName[2] + " = '" + currentUserName + "']"+"["+ this.pathName[0] + " = '" + mxApp.getGuid() +  "']";
 
             mx.data.get({
                 xpath    : xpathString,
@@ -152,10 +147,10 @@ define([
             if (mxVote.length === 0) { // user has not voted before
                 this.createVote(mx.session.getUserName(), count, mxApp, currentTotal, currentCount);
             } else { // user has voted before, update the vote
-                var userVote = mxVote[0].get(this.pathAttr[this.two]),
+                var userVote = mxVote[0].get(this.pathAttr[2]),
                     voteDiff = count - userVote;
 
-                mxVote[0].set(this.pathAttr[this.two], count);
+                mxVote[0].set(this.pathAttr[2], count);
                 this._saveSequence(mxVote[0]);
 
                 mxApp.set(this.ratingsTotal, (parseInt(currentTotal, 10) + voteDiff));
@@ -173,8 +168,8 @@ define([
                         logger.debug(this.id + ".createVote created");
 
                         app.addReference(this.pathName[0], voteObject.getGuid());
-                        voteObject.set(this.pathName[this.two], user); // Setting the name of the voter.
-                        voteObject.set(this.pathAttr[this.two], vote); // Setting the count for the vote
+                        voteObject.set(this.pathName[2], user);
+                        voteObject.set(this.pathAttr[2], vote);
 
                         app.set(this.ratingsTotal, (parseInt(currentTotal, 10) + vote));
                         app.set(this.ratingsCount, (parseInt(currentCount, 10) + 1));
@@ -194,24 +189,24 @@ define([
 
         _saveSequence: function (obj) {
             logger.debug(this.id + "._saveSequence, type: " + obj.getEntity());
-            // mx.data.save({
-            //     mxobj: obj,
-            //     callback: lang.hitch(this, function () {
-            //         logger.debug(this.id + "._saveSequence obj type " + obj.getEntity() + " saved");
-            mx.data.commit({
+            mx.data.save({
                 mxobj: obj,
                 callback: lang.hitch(this, function () {
-                    logger.debug(this.id + "._saveSequence obj type " + obj.getEntity() + " committed");
+                    logger.debug(this.id + "._saveSequence obj type " + obj.getEntity() + " saved");
+                    mx.data.commit({
+                        mxobj: obj,
+                        callback: lang.hitch(this, function () {
+                            logger.debug(this.id + "._saveSequence obj type " + obj.getEntity() + " committed");
+                        }),
+                        error: lang.hitch(this, function (err) {
+                            logger.error(this.id + "._saveSequence obj type " + obj.getEntity() + " commit error: ", err);
+                        })
+                    });
                 }),
                 error: lang.hitch(this, function (err) {
-                    logger.error(this.id + "._saveSequence obj type " + obj.getEntity() + " commit error: ", err);
+                    logger.error(this.id + "._saveSequence obj type " + obj.getEntity() + " save error: ", err);
                 })
             });
-            //     }),
-            //     error: lang.hitch(this, function (err) {
-            //         logger.error(this.id + "._saveSequence obj type " + obj.getEntity() + " save error: ", err);
-            //     })
-            // });
         },
 
         mouseenterEvent : function(enterIterator, event) {
@@ -245,4 +240,4 @@ define([
     });
 });
 
-require(["Ratings/widget/ratings"]);
+require(["com/mendix/widget/Ratings/ratings"]);
