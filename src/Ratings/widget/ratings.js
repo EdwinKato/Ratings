@@ -1,33 +1,36 @@
 define([
-    "dojo/_base/declare",  // contains functions to define Dojo classes, which support standard Object Oriented concepts within Dojo.
+    "dojo/_base/declare", // contains functions to define Dojo classes, which support standard Object Oriented concepts within Dojo.
     "mxui/widget/_WidgetBase", // Super class from which all mendix widgets inherit
     "dijit/_TemplatedMixin", // Takes an html string and returns its dom
-    "dojo/dom-attr",// Defines the core dom attributes. functions such as set, get, remove and has
-    "dojo/dom-construct",// Defines the core dojo dom construction api
-    "dojo/_base/lang",// contains functions for supporting Polymorphism and other language constructs that are fundamental to the rest of the toolkit
-    "dojo/number",// contains methods for user presentation of JavaScript Number objects: formatting, parsing, and rounding
+    "dojo/dom-attr", // Defines the core dom attributes. functions such as set, get, remove and has
+    "dojo/dom-construct", // Defines the core dojo dom construction api
+    "dojo/_base/lang", // contains functions for supporting Polymorphism and other language constructs that are fundamental to the rest of the toolkit
+    "dojo/number", // contains methods for user presentation of JavaScript Number objects: formatting, parsing, and rounding
     "dojo/_base/array", // enhancements to native array functions which may not be available
     "dojo/text!Ratings/widget/templates/ratings.html"
-], function (declare, _WidgetBase, _TemplatedMixin, domAttr, domConstruct, lang, number, dojoArray, widgetTemplate) {
+], function(declare, _WidgetBase, _TemplatedMixin, domAttr, domConstruct, lang, number, dojoArray, widgetTemplate) {
     "use strict";
 
-    return declare("Ratings.widget.ratings", [ _WidgetBase, _TemplatedMixin ], {
+    return declare("Ratings.widget.ratings", [_WidgetBase, _TemplatedMixin], {
 
-        templateString : widgetTemplate,
 
-        divNode : "", // This is picked from the widget template
-        attrValues : null,
-        hasVoted : true,
-        connectArray : null, // This is used to register for events on click of each of the stars and is thus declared as an array
-        mouseoverArray : null, // This is used to register for events on mouse over of each of the stars and is thus declared as an array
-        root : "", // This is set as the url at which the mendix app is running
-        ratingsListEvent : "",
-        pathAttr : "", // Used to refer to the attribute that stores the vote
-        pathName : "", // Used to refer to the attribute that stores the name of the voter
+
+        templateString: widgetTemplate,
+
+        divNode: "", // This is picked from the widget template
+        attrValues: null,
+        hasVoted: true,
+        connectArray: null, // This is used to register for events on click of each of the stars and is thus declared as an array
+        mouseoverArray: null, // This is used to register for events on mouse over of each of the stars and is thus declared as an array
+        root: "", // This is set as the url at which the mendix app is running
+        ratingsListEvent: "",
+        pathAttr: "", // Used to refer to the attribute that stores the vote
+        pathName: "", // Used to refer to the attribute that stores the name of the voter
 
         standardImage: null, // This refers to the full uncolured star
         mouseoverImage: null, // This refers to the full coloured image
         halfImage: "", // This refers to the half coloured image
+        sample:"",
 
         noofstars: 5, // My modification. Added this attribute to refer to the number of stars for looping purposes.
         halfimagevalue: 0.5, // My modification. Added this attribute to refer to the integer value for halfimage
@@ -35,7 +38,7 @@ define([
 
         _contextObj: null, // Internal variable indicating the object within which the widget is placed
 
-        postCreate : function(){
+        postCreate: function() {
             logger.debug(this.id + ".postCreate");
             this.root = window.mx.appUrl; // Gives us the url the application is running at. mx is the container of the mendix client subsystems
 
@@ -46,7 +49,7 @@ define([
             this.pathName = this.voteName.split("/");
         },
 
-        showRatings : function(callback){
+        showRatings: function(callback) {
             logger.debug(this.id + ".showRatings");
 
             var mxApp = this._contextObj;
@@ -73,14 +76,14 @@ define([
             mendix.lang.nullExec(callback);
         },
 
-        createRatingsList : function(showVote, mxApp){
+        createRatingsList: function(showVote, mxApp) {
             var ratingsList = mxui.dom.create("ul");
             if (this.voteEnabled === true) {
                 this.ratingsListEvent = this.connect(ratingsList, "onmouseleave", lang.hitch(this, this.mouseleaveEvent, showVote));
             }
 
             for (var i = 1; i <= this.noofstars; i++) {
-                var imgNode = mxui.dom.create("img",{class: "ratings_image"}); // create(element, propsnullable, …children)
+                var imgNode = mxui.dom.create("img", { class: "ratings_image" }); // create(element, propsnullable, …children)
                 if (i > showVote) {
                     if (this.halfImage !== "" && (i - showVote === this.halfimagevalue)) {
                         domAttr.set(imgNode, "src", this._getImagePath(this.halfImage));
@@ -92,17 +95,17 @@ define([
                 }
                 var ratingsLi = mxui.dom.create("li", imgNode);
                 if (this.voteEnabled === true) {
-                    this.mouseoverArray[i-1] = {};  // This is so because on  mouse enter only works upto the fifth
-                    this.mouseoverArray[i-1].handle = this.connect(imgNode, "onmouseenter", lang.hitch(this, this.mouseenterEvent, i));
-                    this.mouseoverArray[i-1].element = imgNode;
-                    this.connectArray[i-1] = this.connect(ratingsLi, "onclick", lang.hitch(this, this.onclickRating, i, mxApp));
+                    this.mouseoverArray[i - 1] = {}; // This is so because on  mouse enter only works upto the fifth
+                    this.mouseoverArray[i - 1].handle = this.connect(imgNode, "onmouseenter", lang.hitch(this, this.mouseenterEvent, i));
+                    this.mouseoverArray[i - 1].element = imgNode;
+                    this.connectArray[i - 1] = this.connect(ratingsLi, "onclick", lang.hitch(this, this.onclickRating, i, mxApp));
                 }
                 ratingsList.appendChild(ratingsLi); // Just normal JavaScript
             }
             this.divNode.appendChild(ratingsList);
         },
 
-        setMouseOver : function (iterator) {
+        setMouseOver: function(iterator) {
             logger.debug(this.id + ".setMouseOver", iterator);
 
             for (var j = 0; j <= iterator; j++) {
@@ -118,11 +121,11 @@ define([
             }
         },
 
-        _getImagePath : function (img) { // Index of returns position of first occurrence of provided word
-            return (this.root + (this.root.indexOf("localhost") !== -1 ? "/" : "" ) + img).split("?")[0]; // fix image path and remove cachebust
+        _getImagePath: function(img) { // Index of returns position of first occurrence of provided word
+            return (this.root + (this.root.indexOf("localhost") !== -1 ? "/" : "") + img).split("?")[0]; // fix image path and remove cachebust
         },
 
-        onclickRating : function(count, mxApp, event) {
+        onclickRating: function(count, mxApp, event) {
             logger.debug(this.id + ".onclickRating");
 
             // user can click only once
@@ -135,15 +138,15 @@ define([
 
             // store the fact that the user has voted
             var currentUserName = mx.session.getUserName();
-            var xpathString = "//" + this.pathName[1] + "[" + this.pathName[this.two] + " = '" + currentUserName + "']"+"["+ this.pathName[0] + " = '" + mxApp.getGuid() +  "']";
+            var xpathString = "//" + this.pathName[1] + "[" + this.pathName[this.two] + " = '" + currentUserName + "']" + "[" + this.pathName[0] + " = '" + mxApp.getGuid() + "']";
 
             mx.data.get({
-                xpath    : xpathString,
-                callback : lang.hitch(this, this.commitRating, count, mxApp)
+                xpath: xpathString,
+                callback: lang.hitch(this, this.commitRating, count, mxApp)
             });
         },
 
-        commitRating : function (count, mxApp, mxVote) {
+        commitRating: function(count, mxApp, mxVote) {
             logger.debug(this.id + ".commitRating");
 
             var currentTotal = mxApp.get(this.ratingsTotal),
@@ -163,13 +166,13 @@ define([
             }
         },
 
-        createVote : function (user, vote, app, currentTotal, currentCount) {
+        createVote: function(user, vote, app, currentTotal, currentCount) {
             logger.debug(this.id + ".createVote");
 
             mx.data.create({
-                entity	: this.pathName[1],
-                callback	: lang.hitch(this,
-                    function (user, vote, app, currentTotal, currentCount, voteObject) {
+                entity: this.pathName[1],
+                callback: lang.hitch(this,
+                    function(user, vote, app, currentTotal, currentCount, voteObject) {
                         logger.debug(this.id + ".createVote created");
 
                         app.addReference(this.pathName[0], voteObject.getGuid());
@@ -188,11 +191,11 @@ define([
                     currentTotal,
                     currentCount
                 ),
-                context	: null
+                context: null
             });
         },
 
-        _saveSequence: function (obj) {
+        _saveSequence: function(obj) {
             logger.debug(this.id + "._saveSequence, type: " + obj.getEntity());
             // mx.data.save({
             //     mxobj: obj,
@@ -200,10 +203,10 @@ define([
             //         logger.debug(this.id + "._saveSequence obj type " + obj.getEntity() + " saved");
             mx.data.commit({
                 mxobj: obj,
-                callback: lang.hitch(this, function () {
+                callback: lang.hitch(this, function() {
                     logger.debug(this.id + "._saveSequence obj type " + obj.getEntity() + " committed");
                 }),
-                error: lang.hitch(this, function (err) {
+                error: lang.hitch(this, function(err) {
                     logger.error(this.id + "._saveSequence obj type " + obj.getEntity() + " commit error: ", err);
                 })
             });
@@ -214,17 +217,17 @@ define([
             // });
         },
 
-        mouseenterEvent : function(enterIterator, event) {
+        mouseenterEvent: function(enterIterator, event) {
             logger.debug(this.id + ".mouseenterEvent");
             this.setMouseOver(enterIterator - 1);
         },
 
-        mouseleaveEvent : function(showVote, event) {
+        mouseleaveEvent: function(showVote, event) {
             logger.debug(this.id + ".mouseleaveEvent", showVote);
             this.setMouseOver(showVote - 1);
         },
 
-        update: function (obj, callback) {
+        update: function(obj, callback) {
             logger.debug(this.id + ".update");
             if (obj) {
                 this._contextObj = obj;
@@ -235,7 +238,7 @@ define([
             }
         },
 
-        uninitialize : function(){
+        uninitialize: function() {
             logger.debug(this.id + ".uninitialize");
             dojoArray.forEach(this.connectArray, this.disconnect);
             for (var i = 0; i < this.mouseoverArray.length; i++) {
