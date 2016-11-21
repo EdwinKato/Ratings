@@ -5,10 +5,10 @@ module.exports = {
     entry: "./src/com/mendix/widget/Ratings/ratings.ts",
     output: {
         path: __dirname + "/dist/tmp",
-        filename: "src/Ratings/widget/Ratings.js",
+        filename: "src/com/mendix/widget/Ratings/ratings.js",
         libraryTarget: "umd",
         umdNamedDefine: true,
-        library: "com.mendix.widget.Ratings.ratings"
+        library: "com.mendix.widget.ProgressBar.ProgressBar"
     },
     resolve: {
         extensions: ["", ".ts", ".js", ".json"]
