@@ -5,7 +5,7 @@ define([
     "dojo/dom-attr",
     "dojo/dom-class",
     "dojo/_base/lang",
-    "dojo/text!com/mendix/widget/Ratings/templates/ratings.html"
+    "dojo/text!com/mendix/widget/Ratings/components/ratings.html"
 ], function (declare, _WidgetBase, _TemplatedMixin, domAttr, domClass, lang, widgetTemplate) {
     "use strict";
 

@@ -2,13 +2,13 @@ var webpack = require("webpack");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-    entry: "./src/Ratings/widget/Ratings.ts",
+    entry: "./src/com/mendix/widget/Ratings/ratings.ts",
     output: {
         path: __dirname + "/dist/tmp",
         filename: "src/Ratings/widget/Ratings.js",
         libraryTarget: "umd",
         umdNamedDefine: true,
-        library: "Ratings.widget.Ratings"
+        library: "com.mendix.widget.Ratings.ratings"
     },
     resolve: {
         extensions: ["", ".ts", ".js", ".json"]
